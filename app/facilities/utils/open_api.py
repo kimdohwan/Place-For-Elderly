@@ -28,7 +28,7 @@ from facilities.models import Facility
 #     INFO	200	해당하는 데이터가 없습니다.
 
 BASE_URL = 'https://openapi.gg.go.kr'
-DATA_NAME = 'OldPersonRecuperationFacility'
+API_NAME = 'OldPersonRecuperationFacility'
 API_KEY = settings.secrets['API_KEY']
 
 
@@ -36,7 +36,7 @@ def set_database():
     # DB 리셋
     Facility.objects.all().delete()
 
-    url = BASE_URL + '/' + DATA_NAME
+    url = BASE_URL + '/' + API_NAME
 
     # pindex 1 부터 데이터가 없을 때까지 계속 요청하도록 함
     pindex = 1
@@ -52,7 +52,7 @@ def set_database():
 
         # 더 이상 불러올 데이터가 없거나 잘못된 요청일 경우 while loop 중단
         # 중단된 이유를 나타내는 코드와 메시지 출력
-        if DATA_NAME not in j.keys():
+        if API_NAME not in j.keys():
             code = j['RESULT']['CODE']
             message = j['RESULT']['MESSAGE']
             print(code, message)
@@ -60,7 +60,7 @@ def set_database():
             break
 
         # 시설 리스트를 json에서 뽑아옴
-        facility_list = j[DATA_NAME][1]['row']
+        facility_list = j[API_NAME][1]['row']
         facility_list = change_date_format(facility_list)
 
         save_facility(facility_list)
