@@ -63,16 +63,15 @@ def set_database():
         facility_list = j[DATA_NAME][1]['row']
         facility_list = change_date_format(facility_list)
 
-        save_data(facility_list)
+        save_facility(facility_list)
 
         pindex += 1
 
 
 # bulk_create()를 사용해 DB에 저장
-def save_data(facility_list):
+def save_facility(facility_list):
     objs = [Facility(**kwargs) for kwargs in facility_list]
     Facility.objects.bulk_create(objs)
-    Facility.objects.all().count()
 
 
 # 날짜를 저장 가능한 포멧으로 변경
