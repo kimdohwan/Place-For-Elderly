@@ -50,7 +50,7 @@ def set_database():
         res = requests.get(url, params=payload)
         j = json.loads(res.text)
 
-        # 더 이상 불러올 데이터가 없거나 잘못된 요청일 경우 while loop 중단
+        # 더 이상 불러올 데이터가 없거나(INFO-200) 잘못된 요청일 경우 while loop 중단
         # 중단된 이유를 나타내는 코드와 메시지 출력
         if API_NAME not in j.keys():
             code = j['RESULT']['CODE']
