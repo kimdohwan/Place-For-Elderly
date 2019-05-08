@@ -5,7 +5,6 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
 from config import settings
-from ..models import Facility
 
 # - 기본 파라미터
 #     'KEY': 발급받은 api key,
