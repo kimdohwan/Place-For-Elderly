@@ -36,64 +36,52 @@ API_KEY = settings.secrets['API_KEY']
 SUCCESS_CODE = ['INFO-000', 'INFO-200']
 
 
-def set_database():
-    # try,except 를 사용하여 Exception 발생 시, DB가 이전 상태로 유지되도록 처리
-    try:
-        # facility 항목 모두 지운 후 진행
-        Facility.objects.all().delete()
+def get_api_data():
+    url = BASE_URL + '/' + API_NAME
+    api_data = []
 
-        url = BASE_URL + '/' + API_NAME
+    # pindex 1 부터 데이터가 없을 때까지 while loop 진행
+    pindex = 1
+    while True:
+        payload = {
+            'KEY': API_KEY,
+            'Type': 'json',
+            'pindex': pindex
+        }
 
-        # pindex 1 부터 데이터가 없을 때까지 진행
-        pindex = 1
-        while True:
-            payload = {
-                'KEY': API_KEY,
-                'Type': 'json',
-                'pindex': pindex
-            }
+        # ConnectionError 발생 시 requests session 설정을 바꿔 진행
+        try:
+            res = requests.get(url, params=payload)
+        except requests.ConnectionError:
+            session = requests.Session()
+            retry = Retry(connect=3, backoff_factor=0.5)
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount('https://', adapter)
+            res = session.get(url, params=payload)
 
-            # ConnectionError 발생 시 requests session 설정을 바꿔 진행
-            try:
-                res = requests.get(url, params=payload)
-            except requests.ConnectionError:
-                session = requests.Session()
-                retry = Retry(connect=3, backoff_factor=0.5)
-                adapter = HTTPAdapter(max_retries=retry)
-                session.mount('https://', adapter)
-                res = session.get(url, params=payload)
+        j = json.loads(res.text)
 
-            j = json.loads(res.text)
+        # 더 이상 불러올 데이터가 없거나(INFO-200), 잘못된 요청일 경우 while loop 중단
+        if API_NAME not in j.keys():
+            code = j['RESULT']['CODE']
+            message = j['RESULT']['MESSAGE']
 
-            # 더 이상 불러올 데이터가 없거나(INFO-200) 잘못된 요청일 경우 while loop 중단
-            if API_NAME not in j.keys():
-                code = j['RESULT']['CODE']
-                message = j['RESULT']['MESSAGE']
+            # 데이터를 모두 불러온 경우 return
+            if code in SUCCESS_CODE:
+                return api_data
 
-                # 데이터를 모두 불러온 경우 return
-                if code in SUCCESS_CODE:
-                    return print('{} 개의 Facility 저장.'.format(Facility.objects.all().count()))
+            # 중단된 이유를 나타내는 code 와 message 출력 후 중단
+            print(code, message)
+            break
 
-                # 중단된 이유를 나타내는 code 를 exception 으로 전달
-                raise Exception(f'{code}: {message}')
+        # 시설 리스트를 json(j) 에서 얻은 후, 날짜 포멧을 변경하는 함수 실행
+        facility_list = j[API_NAME][1]['row']
+        facility_list = change_date_format(facility_list)
 
-            # 시설 리스트를 json(j) 에서 얻은 후, 날짜 포멧을 변경하는 함수 실행
-            facility_list = j[API_NAME][1]['row']
-            facility_list = change_date_format(facility_list)
+        # return 될 api_data 에 시설 리스트를 추가
+        api_data += facility_list
 
-            # DB 에 저장
-            save_facility(facility_list)
-
-            pindex += 1
-
-    except Exception as error:
-        print(repr(error))
-
-
-# bulk_create()를 사용해 DB에 저장
-def save_facility(facility_list):
-    objs = [Facility(**kwargs) for kwargs in facility_list]
-    Facility.objects.bulk_create(objs)
+        pindex += 1
 
 
 # 날짜를 저장 가능한 포멧으로 변경
