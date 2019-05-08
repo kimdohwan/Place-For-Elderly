@@ -1,8 +1,11 @@
 import json
-import requests
 
-from config import settings
-from facilities.models import Facility
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
+from ...config import settings
+from ..models import Facility
 
 # - 기본 파라미터
 #     'KEY': 발급받은 api key,
@@ -30,42 +33,61 @@ from facilities.models import Facility
 BASE_URL = 'https://openapi.gg.go.kr'
 API_NAME = 'OldPersonRecuperationFacility'
 API_KEY = settings.secrets['API_KEY']
+SUCCESS_CODE = ['INFO-000', 'INFO-200']
 
 
 def set_database():
-    # DB 리셋
-    Facility.objects.all().delete()
+    # try,except 를 사용하여 Exception 발생 시, DB가 이전 상태로 유지되도록 처리
+    try:
+        # facility 항목 모두 지운 후 진행
+        Facility.objects.all().delete()
 
-    url = BASE_URL + '/' + API_NAME
+        url = BASE_URL + '/' + API_NAME
 
-    # pindex 1 부터 데이터가 없을 때까지 계속 요청하도록 함
-    pindex = 1
-    while True:
-        payload = {
-            'KEY': API_KEY,
-            'Type': 'json',
-            'pindex': pindex
-        }
+        # pindex 1 부터 데이터가 없을 때까지 진행
+        pindex = 1
+        while True:
+            payload = {
+                'KEY': API_KEY,
+                'Type': 'json',
+                'pindex': pindex
+            }
 
-        res = requests.get(url, params=payload)
-        j = json.loads(res.text)
+            # ConnectionError 발생 시 requests session 설정을 바꿔 진행
+            try:
+                res = requests.get(url, params=payload)
+            except requests.ConnectionError:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('https://', adapter)
+                res = session.get(url, params=payload)
 
-        # 더 이상 불러올 데이터가 없거나(INFO-200) 잘못된 요청일 경우 while loop 중단
-        # 중단된 이유를 나타내는 코드와 메시지 출력
-        if API_NAME not in j.keys():
-            code = j['RESULT']['CODE']
-            message = j['RESULT']['MESSAGE']
-            print(code, message)
-            print('{} 개의 Facility 가 저장되었습니다.'.format(Facility.objects.all().count()))
-            break
+            j = json.loads(res.text)
 
-        # 시설 리스트를 json에서 뽑아옴
-        facility_list = j[API_NAME][1]['row']
-        facility_list = change_date_format(facility_list)
+            # 더 이상 불러올 데이터가 없거나(INFO-200) 잘못된 요청일 경우 while loop 중단
+            if API_NAME not in j.keys():
+                code = j['RESULT']['CODE']
+                message = j['RESULT']['MESSAGE']
 
-        save_facility(facility_list)
+                # 데이터를 모두 불러온 경우 return
+                if code in SUCCESS_CODE:
+                    return print('{} 개의 Facility 저장.'.format(Facility.objects.all().count()))
 
-        pindex += 1
+                # 중단된 이유를 나타내는 code 를 exception 으로 전달
+                raise Exception(f'{code}: {message}')
+
+            # 시설 리스트를 json(j) 에서 얻은 후, 날짜 포멧을 변경하는 함수 실행
+            facility_list = j[API_NAME][1]['row']
+            facility_list = change_date_format(facility_list)
+
+            # DB 에 저장
+            save_facility(facility_list)
+
+            pindex += 1
+
+    except Exception as error:
+        print(repr(error))
 
 
 # bulk_create()를 사용해 DB에 저장
@@ -77,6 +99,8 @@ def save_facility(facility_list):
 # 날짜를 저장 가능한 포멧으로 변경
 # 20111230 과 같이 들어오는 포멧을 2011-12-30으로 변환하는 함수
 def change_date_format(facility_list):
+    # l_data: 인허가일자
+    # c_date: 폐업일자
     for facility in facility_list:
         l_date = facility['LICENSG_DE']
         if l_date is not None:
