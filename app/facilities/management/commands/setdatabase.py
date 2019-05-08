@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
+from open_api.open_api import get_api_data
 from ...models import Facility
-from ...utils.open_api import get_api_data
 
 
 class Command(BaseCommand):
