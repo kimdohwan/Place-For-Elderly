@@ -19,5 +19,6 @@ class Command(BaseCommand):
 
             print('{} 개의 Facility 저장.'.format(Facility.objects.all().count()))
 
-        except:
-            print("Can't set API database")
+        # TypeError: get_api_data() 에서 return 값이 없는 경우(open_api requests 실패)
+        except TypeError:
+            print("Can't set database")
