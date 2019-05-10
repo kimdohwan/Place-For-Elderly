@@ -1,42 +1,53 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+{% extends "facilities/index.html" %}
+
+{% block extrahead %}
     <style>
-        li {
-            list-style-type: none;
-            float: left;
-            margin-left: 10px;
+        table {
+            table-layout: fixed;
+            text-align: center;
+        }
+
+        th, td {
+            white-space: nowrap;
+        }
+
+        p {
+            margin: 0px;
         }
     </style>
-</head>
-<body>
-<h3>경기도 노인 요양 시설 현황</h3>
-<table cellspacing=1 width=700 border=1>
-    <thead>
-    <th width=50><p align=center>번호</p></th>
-    <th width=50><p align=center>이름</p></th>
-    <th width=50><p align=center>제목</p></th>
-    <th width=50><p align=center>주소</p></th>
-    <th width=50><p align=center>도로명</p></th>
-    <th width=50><p align=center>우편번호</p></th>
-    </thead>
-    <tbody>
-    {% for facility in facility_list %}
-        <tr>
-            <td width=50><p align=center>{{ facility.SIGUN_NM }}</p></td>
-            <td width=50><p align=center>{{ facility.BIZPLC_NM }}</p></td>
-            <td width=50><p align=center>{{ facility.BSN_STATE_NM }}</p></td>
-            <td width=50><p align=center>{{ facility.REFINE_LOTNO_ADDR }}</p></td>
-            <td width=50><p align=center>{{ facility.REFINE_ROADNM_ADDR }}</p></td>
-            <td width=50><p align=center>{{ facility.REFINE_ZIP_CD }}</p></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-</body>
-</html>
+{% endblock %}
+
+{% block content %}
+    {% if facility_list %}
+    <table cellspacing=1, border=1>
+        <thead>
+        <th>시/군</th>
+        <th>시설명</th>
+        <th>영업 상태</th>
+        <th>
+            <p>지번 주소</p>
+            <p>도로명</p>
+        </th>
+        <th>우편번호</th>
+        </thead>
+        <tbody>
+        {% for facility in facility_list %}
+            <tr>
+                <td>{{ facility.SIGUN_NM }}</td>
+                <td><a href="{% url 'facility-detail' facility.pk %}">{{ facility.BIZPLC_NM }}</a></td>
+                <td>{{ facility.BSN_STATE_NM }}</td>
+                <td>
+                    <p>{{ facility.REFINE_LOTNO_ADDR }}</p>
+                    {% if facility.REFINE_ROADNM_ADDR %}
+                        <p>{{ facility.REFINE_ROADNM_ADDR }}</p>
+                    {% endif %}
+                </td>
+                <td>{{ facility.REFINE_ZIP_CD }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div align="center">검색 결과 없음</div>
+    {% endif %}
+{% endblock %}
