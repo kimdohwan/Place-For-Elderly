@@ -4,6 +4,7 @@ from open_api.open_api import get_api_data
 from ...models import Facility
 
 
+# ./manage.py setapidata 실행
 class Command(BaseCommand):
     def handle(self, *args, **options):
         # try,except 를 사용해 Exception 발생 시, 이전 DB 상태에 영향 주지 않도록 처리
