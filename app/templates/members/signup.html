@@ -2,14 +2,14 @@
 
 {% block extrahead %}
     <style>
-        div.signup_form {
+        div.signup_field {
+            margin: 20px auto;
+        }
+
+        body {
             text-align: center;
         }
 
-        div.signup_field {
-            margin: 20px auto;
-            text-align: center;
-        }
     </style>
 {% endblock %}
 
@@ -17,13 +17,14 @@
     <div class="signup_form">
         <form action="{% url 'signup' %}" method="post">
             {% csrf_token %}
-                {% for field in form %}
-                    <div class="signup_field">
+            {% for field in form %}
+                <div class="signup_field">
                     {{ field.label }}
                     {{ field }}
+                    {#                    <p>{{ field.help_text }}</p>#}
                     {{ field.errors }}
-                    </div>
-                {% endfor %}
+                </div>
+            {% endfor %}
             <button type="submit">회원가입</button>
         </form>
     </div>
