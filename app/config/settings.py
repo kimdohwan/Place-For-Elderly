@@ -22,6 +22,8 @@ secrets = json.load(open(os.path.join(SECRET_DIR, 'secret.json')))
 
 SECRET_KEY = secrets['SECRET_KEY']
 
+AUTH_USER_MODEL = 'members.User'
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'facilities',
+    'members',
 ]
 
 MIDDLEWARE = [
