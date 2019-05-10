@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block extrahead %}
+    <style>
+        body {
+            text-align: center;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'signin' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+{#        {{ form.error }}#}
+        <button type="submit" class="btn btn-secondary">로그인</button>
+    </form>
+{% endblock %}

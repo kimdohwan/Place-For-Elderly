@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model, password_validation
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 
 User = get_user_model()
 
@@ -35,3 +35,16 @@ class SignupForm(UserCreationForm):
             'password1',
             'password2',
         )
+
+
+class SigninForm(AuthenticationForm):
+    username = UsernameField(label="아이디", widget=forms.TextInput(attrs={'autofocus': True}))
+    password = forms.CharField(
+        label="비밀번호",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+
+    error_messages = {
+        'invalid_login': "정확한  아이디와 비밀번호를 입력해주세요 "
+    }
