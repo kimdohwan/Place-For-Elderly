@@ -45,3 +45,7 @@ def search_view(request):
         'search_text': search_text,
     }
     return render(request, 'facilities/facility_list.html', context)
+
+
+fac_list = FacilityListView.as_view()
+fac_detail = FacilityDetailView.as_view
