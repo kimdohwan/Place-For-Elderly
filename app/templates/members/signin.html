@@ -16,10 +16,9 @@
 {% endblock %}
 
 {% block content %}
-    <form action="{% url 'signin' %}" method="post">
+    <form action="{% url 'members:signin' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-{#        {{ form.error }}#}
         <button type="submit" class="btn btn-secondary">로그인</button>
     </form>
 {% endblock %}

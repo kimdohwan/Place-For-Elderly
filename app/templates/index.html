@@ -20,22 +20,22 @@
             <div class="col-sm-2">
             </div>
 
-            <ul><a href="{% url 'index' %}">전체 시설 목록</a></ul>
+            <ul><a href="{% url 'facilities:index' %}">전체 시설 목록</a></ul>
             <ul><a href="">지도</a></ul>
             {% if user.is_authenticated %}
-                <ul><a href="">내 정보</a></ul>
-                <ul><a href="{% url 'signout' %}">로그아웃</a></ul>
+                <ul><a href="{% url 'members:userinfo' user.id %}">내 정보</a></ul>
+                <ul><a href="{% url 'members:signout' %}">로그아웃</a></ul>
 
             {% else %}
-                <ul><a href="{% url 'signin' %}">로그인</a></ul>
-                <ul><a href="{% url 'signup' %}">회원가입</a></ul>
+                <ul><a href="{% url 'members:signin' %}">로그인</a></ul>
+                <ul><a href="{% url 'members:signup' %}">회원가입</a></ul>
             {% endif %}
         </div>
     </div>
 </header>
 <body>
 <div align="center">
-    <form action="{% url 'search' %}" method="get">
+    <form action="{% url 'facilities:search' %}" method="get">
         <select name="search_option">
             <option value="facility_address">지역(시/군/동/리) 검색</option>
             <option value="facility_name">시설명 검색</option>

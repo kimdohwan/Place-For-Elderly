@@ -34,7 +34,7 @@
         {% for facility in facility_list %}
             <tr>
                 <td>{{ facility.SIGUN_NM }}</td>
-                <td><a href="{% url 'facility-detail' facility.pk %}">{{ facility.BIZPLC_NM }}</a></td>
+                <td><a href="{% url 'facilities:facility-detail' facility.pk %}">{{ facility.BIZPLC_NM }}</a></td>
                 <td>{{ facility.BSN_STATE_NM }}</td>
                 <td>
                     <p>{{ facility.REFINE_LOTNO_ADDR }}</p>
