@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+
+{% block extrahead %}{% endblock %}
+
+{% block content %}
+    {{ member.username }}
+    {% for facility in member.facility_list %}
+        <div>
+            {% include 'facilities/facility_info.html' with facility=facility %}
+        </div>
+        <p></p>
+    {% endfor %}
+{% endblock %}
