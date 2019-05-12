@@ -23,7 +23,7 @@ class FacilityDetailView(DetailView):
 
 
 def index_view(request):
-    return redirect('facility-list')
+    return redirect('facilities:facility-list')
 
 
 def search_view(request):
@@ -47,5 +47,5 @@ def search_view(request):
     return render(request, 'facilities/facility_list.html', context)
 
 
-fac_list = FacilityListView.as_view()
-fac_detail = FacilityDetailView.as_view
+facility_list = FacilityListView.as_view()
+facility_detail = FacilityDetailView.as_view()
