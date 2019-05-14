@@ -23,14 +23,21 @@ secrets_module = json.load(open(os.path.join(SECRET_DIR, f'{MODULE_NAME}.json'))
 
 DEBUG = True if not MODULE_NAME == 'production' else False
 
-ALLOWED_HOSTS = secrets_module["ALLOWED_HOSTS"]
+ALLOWED_HOSTS = secrets_module['ALLOWED_HOSTS']
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = secrets_module['POSTGRES_DATABASES']
+
+# - docker-compose 사용 시
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'HOST': os.environ.get('DB_HOST'),
+#         'NAME': os.environ.get('DB_NAME'),
+#         'USER': os.environ.get('DB_USER'),
+#         'PASSWORD': os.environ.get('DB_PASS'),
+#     }
+# }
+
 
 WSGI_APPLICATION = f'config.wsgi.{MODULE_NAME}.application'
 
