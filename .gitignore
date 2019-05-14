@@ -1,4 +1,15 @@
+
+### My ignore ###
 .secrets/
+
+### JupyterNotebook ###
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.ipynb
+
+
+
+
 
 
 # Created by https://www.gitignore.io/api/git,linux,django,python,pycharm+all
