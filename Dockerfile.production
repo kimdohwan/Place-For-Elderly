@@ -3,8 +3,9 @@ FROM            place-for-elderly:base
 MAINTAINER      dosio0102@gmail.com
 
 # 프로젝트 복사 및 패키지 설치
+COPY            ./requirements.txt      /srv/requirements.txt
+RUN             pip install -r /srv/requirements.txt
 COPY            .       /srv/Place-For-Elderly
-RUN             pip install -r /srv/Place-For-Elderly/requirements.txt
 
 # 장고 모듈 설정
 ENV             BUILD_MODE  production
