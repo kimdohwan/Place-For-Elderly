@@ -11,16 +11,23 @@ services:
     volumes:
       - ./app:/srv/Place-For-Elderly/app
     command:  >
-      sh -c "/srv/Place-For-Elderly/app/manage.py runserver 0:8000"
+      sh -c "/srv/Place-For-Elderly/app/manage.py wait_for_db &&
+             /srv/Place-For-Elderly/app/manage.py migrate &&
+             /srv/Place-For-Elderly/app/manage.py setapidata &&
+             /srv/Place-For-Elderly/app/manage.py runserver 0.0.0.0:8000"
 
-  django_production:
-    image: place-for-elderly:production
-    build:
-      context: .
-      dockerfile: ./Dockerfile.production
-    ports:
-      - "8003:8000"
-    volumes:
-      - ./app:/srv/Place-For-Elderly/app
-    command:  >
-      sh -c "/srv/Place-For-Elderly/app/manage.py runserver 0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
