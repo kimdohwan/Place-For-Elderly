@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  django_dev:
+    image: place-for-elderly:dev
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./app:/srv/Place-For-Elderly/app
+    command:  >
+      sh -c "/srv/Place-For-Elderly/app/manage.py runserver 0:8000"
+
+  django_production:
+    image: place-for-elderly:production
+    build:
+      context: .
+      dockerfile: ./Dockerfile.production
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./app:/srv/Place-For-Elderly/app
+    command:  >
+      sh -c "/srv/Place-For-Elderly/app/manage.py runserver 0:8000"
