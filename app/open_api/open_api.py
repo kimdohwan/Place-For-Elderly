@@ -4,7 +4,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from config import settings
+from config.settings import base as settings
 
 # - 기본 파라미터
 #     'KEY': 발급받은 api key,
@@ -31,7 +31,7 @@ from config import settings
 
 BASE_URL = 'https://openapi.gg.go.kr'
 API_NAME = 'OldPersonRecuperationFacility'
-API_KEY = settings.secrets['API_KEY']
+API_KEY = settings.secrets_base['API_KEY']
 SUCCESS_CODE = ['INFO-000', 'INFO-200']
 
 
