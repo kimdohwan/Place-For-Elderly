@@ -15,7 +15,7 @@ class SignupView(CreateView):
     template_name = 'members/signup.html'
     form_class = SignupForm
     # 회원가입 성공시 이동시킬 페이지
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('facilities:index')
 
 
 def signin_view(request):
