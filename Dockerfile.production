@@ -1,0 +1,12 @@
+#FROM            dosio0102/place-for-elderly:base
+FROM            place-for-elderly:base
+MAINTAINER      dosio0102@gmail.com
+
+# 프로젝트 복사 및 패키지 설치
+COPY            .       /srv/Place-For-Elderly
+RUN             pip install -r /srv/Place-For-Elderly/requirements.txt
+
+# 장고 모듈 설정
+ENV             BUILD_MODE  production
+ENV             DJANGO_SETTINGS_MODULE  config.settings.${BUILD_MODE}
+
