@@ -8,6 +8,9 @@ SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 # - 비공개로 관리할 부분은 secrets 를 통해 관리
+# - base.json 에 보관 중인 설정
+#       - API_KEY: 공공기관 데이터 api key
+#       - SECRET_KEY: 장고 시크릿 키
 secrets_base = json.load(open(os.path.join(SECRET_DIR, 'base.json')))
 SECRET_KEY = secrets_base['SECRET_KEY']
 
@@ -15,6 +18,7 @@ SECRET_KEY = secrets_base['SECRET_KEY']
 # =====================================================================================================================
 # - dev/production 에 따라서 설정 변경
 # - dev/production 공통사항은 이곳에 설정, 그 외 추가사항은 각각의 모듈에 설정
+# - secrets_module: 환경에 따른 설정(dev.json/production.json) 로드
 # - 공통사항 설정 항목 : DEBUG, DATABASE, ALLOWED_HOST, WSGI_APPLICATION
 
 from config.settings import MODULE_NAME
@@ -25,9 +29,9 @@ DEBUG = True if not MODULE_NAME == 'production' else False
 
 ALLOWED_HOSTS = secrets_module['ALLOWED_HOSTS']
 
-DATABASES = secrets_module['POSTGRES_DATABASES']
-
-# - docker-compose 사용 시
+DATABASES = secrets_module['MYSQL_DATABASES']
+# DATABASES = secrets_module['POSTGRES_DATABASES']
+# - docker-compose db 사용 시
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -37,7 +41,6 @@ DATABASES = secrets_module['POSTGRES_DATABASES']
 #         'PASSWORD': os.environ.get('DB_PASS'),
 #     }
 # }
-
 
 WSGI_APPLICATION = f'config.wsgi.{MODULE_NAME}.application'
 
@@ -106,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
