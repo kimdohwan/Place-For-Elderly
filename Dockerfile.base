@@ -1,6 +1,0 @@
-FROM            python:3.6-slim
-MAINTAINER      dosio0102@gmail.com
-
-RUN             apt -y update && apt -y dist-upgrade
-RUN             apt -y install build-essential curl
-RUN             apt -y install nginx supervisor
