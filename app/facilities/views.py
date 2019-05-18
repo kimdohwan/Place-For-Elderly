@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views.generic import ListView, DetailView
 
-from facilities.models import Facility
+from .models import Facility
 
 
 class FacilityListView(ListView):
