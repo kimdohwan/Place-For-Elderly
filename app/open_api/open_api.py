@@ -67,7 +67,7 @@ def get_api_data():
 
             # 데이터를 모두 불러온 경우 return
             if code in SUCCESS_CODE:
-                return api_data
+                break
 
             # 중단된 이유를 나타내는 code 와 message 출력 후 중단
             print(code, message)
@@ -81,6 +81,8 @@ def get_api_data():
         api_data += facility_list
 
         pindex += 1
+
+    return api_data
 
 
 # 날짜를 저장 가능한 포멧으로 변경
