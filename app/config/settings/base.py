@@ -45,7 +45,6 @@ INSTALLED_APPS = [
 # - secrets_module: 환경에 따른 설정(dev.json/production.json) 로드
 # - 공통사항 설정 항목 : DEBUG, DATABASE, ALLOWED_HOST, WSGI_APPLICATION
 
-# from config.settings import MODULE_NAME
 from ..settings import MODULE_NAME
 
 secrets_module = json.load(open(os.path.join(SECRET_DIR, f'{MODULE_NAME}.json')))
@@ -54,9 +53,11 @@ DEBUG = True if not MODULE_NAME == 'production' else False
 
 ALLOWED_HOSTS = secrets_module['ALLOWED_HOSTS']
 
+# zappa lambda 배포 시, mysql 과의 버전 충돌 문제로 postgres 로 DB 변경
+DATABASES = secrets_module['AWS_POSTGRES_DATABASES']
 # pymysql.install_as_MySQLdb()
-# DATABASES = secrets_module['MYSQL_DATABASES']
-DATABASES = secrets_module['POSTGRES_DATABASES']
+# DATABASES = secrets_module['AWS_MYSQL_DATABASES']
+# DATABASES = secrets_module['LOCAL_POSTGRES_DATABASES']
 # - docker-compose db 사용 시
 # DATABASES = {
 #     'default': {
