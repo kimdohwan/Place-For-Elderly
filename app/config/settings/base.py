@@ -1,10 +1,13 @@
 import os
 import json
 
+
 # - 주요 디렉토리 경로를 변수로 관리
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT_DIR = os.path.dirname(BASE_DIR)
-SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
+# SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
+SECRET_DIR = os.path.join(BASE_DIR, '.secrets')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 # - 비공개로 관리할 부분은 secrets 를 통해 관리
@@ -14,14 +17,36 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 secrets_base = json.load(open(os.path.join(SECRET_DIR, 'base.json')))
 SECRET_KEY = secrets_base['SECRET_KEY']
 
+ROOT_URLCONF = 'config.urls'
 
+# 기본 유져 모델 설정
+AUTH_USER_MODEL = 'members.User'
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATIC_ROOT = '.static'
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'facilities',
+    'members',
+    'crispy_forms',
+]
 # =====================================================================================================================
 # - dev/production 에 따라서 설정 변경
 # - dev/production 공통사항은 이곳에 설정, 그 외 추가사항은 각각의 모듈에 설정
 # - secrets_module: 환경에 따른 설정(dev.json/production.json) 로드
 # - 공통사항 설정 항목 : DEBUG, DATABASE, ALLOWED_HOST, WSGI_APPLICATION
 
-from config.settings import MODULE_NAME
+# from config.settings import MODULE_NAME
+from ..settings import MODULE_NAME
 
 secrets_module = json.load(open(os.path.join(SECRET_DIR, f'{MODULE_NAME}.json')))
 
@@ -29,8 +54,9 @@ DEBUG = True if not MODULE_NAME == 'production' else False
 
 ALLOWED_HOSTS = secrets_module['ALLOWED_HOSTS']
 
-DATABASES = secrets_module['MYSQL_DATABASES']
-# DATABASES = secrets_module['POSTGRES_DATABASES']
+# pymysql.install_as_MySQLdb()
+# DATABASES = secrets_module['MYSQL_DATABASES']
+DATABASES = secrets_module['POSTGRES_DATABASES']
 # - docker-compose db 사용 시
 # DATABASES = {
 #     'default': {
@@ -46,22 +72,6 @@ WSGI_APPLICATION = f'config.wsgi.{MODULE_NAME}.application'
 
 # =====================================================================================================================
 
-
-# 기본 유져 모델 설정
-AUTH_USER_MODEL = 'members.User'
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'facilities',
-    'members',
-    'crispy_forms',
-]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -71,8 +81,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -117,4 +125,3 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
