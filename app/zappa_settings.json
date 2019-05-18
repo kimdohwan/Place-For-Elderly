@@ -1,0 +1,27 @@
+{
+  "production": {
+    "django_settings": "config.settings.production", // 장고 셋팅 모듈
+    "profile_name": "place-lambda-zappa", // AWS credential profile
+    "project_name": "app",
+    "runtime": "python3.6", // 람다에서 사용될 python version
+    "s3_bucket": "place-production", // s3 bucket name
+    "aws_region": "ap-northeast-2",
+    "use_precompiled_packages": false, // 배포 시 변경사항 적용이 안 되는 경우떄문에 false
+    "debug": true, // zappa 설정 관련된 디버깅 제공
+    "delete_s3_zip": true, // s3 zip 아카이브 삭제
+    "delete_local_zip": true, // zip 파일 보관하지 않도록 삭제
+    "slim_handler": false, // 50mb 넘어가는 프로젝트일 경우 true
+    "vpc_config": {
+      // 이 부분을 설정하기 위해 필요한 사전 작업 :
+      // 새로 생성한 VPC 에 subnet, internet gateway, routing table, NAT instance 등 설정
+      "SubnetIds": [
+        "subnet-0a280e132571c1edc",
+        "subnet-0b18cab6922bbbb93"
+      ], // VPC private subnet 설정 - 람다에서 aws 내부 자원(RDS)에 접근할 때 사용하는 subnet
+      "SecurityGroupIds": [
+        "sg-0603ebca3515d2938"
+      ] // lambda VPC 가 사용할 보안그룹 - NAT 인스턴스의 보안그룹으로 설정함
+    }
+  }
+}
+
