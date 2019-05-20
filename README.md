@@ -24,7 +24,7 @@
 
 
 - 경기도 노인 요양시설 현황 데이터 
-  - [x] 공공데이터 포털 api key 취득 및 url 요청([open_api.py](https://github.com/kimdohwan/Place-For-Elderly/blob/master/app/open_api/open_api.py))
+  - [x] 공공데이터 포털 api key 취득 및 url 요청([open_api.py](https://github.com/kimdohwan/Place-For-Elderly/blob/master/app/open_api/recuperation_facility.py))
   - [ ] 연관 데이터(의료 시설, 생활 시설 등) 
 - Django app
   - facilities
@@ -57,6 +57,8 @@
       - 서브넷: private subnet 설정
       - 보안그룹: NAT 보안그룹 설정
   - [ ] 도메인 연결
+  - [ ] lambda 환경 구현된 docker container 로 배포 테스트 구현
+    - local 환경에 맞춰서 쉘 스크립트 작성 및 컨테이터 실행
 
 
 - AWS Lambda 배포 전 사전작업
