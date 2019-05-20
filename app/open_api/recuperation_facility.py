@@ -71,7 +71,8 @@ def get_api_data():
 
             # 중단된 이유를 나타내는 code 와 message 출력 후 중단
             print(code, message)
-            break
+            # None 을 리턴할 경우, manage.py setapidata 실행 시 TypeError 발생함
+            return None
 
         # 시설 리스트를 json(j) 에서 얻은 후, 날짜 포멧을 변경하는 함수 실행
         facility_list = j[API_NAME][1]['row']
