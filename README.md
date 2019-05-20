@@ -3,7 +3,7 @@
 #### Intro
 
 - 경기도 노인 요양시설 현황 정보 제공
-- URL: https://j6sqja4hg2.execute-api.ap-northeast-2.amazonaws.com/production/list/
+- URL: https://j6sqja4hg2.execute-api.ap-northeast-2.amazonaws.com/production
 - python, django, aws lambda, aws rds(postgres, mysql), docker
 
 #### Requirements
@@ -36,6 +36,10 @@
     - [x] 관심 시설 목록
     - [ ] 유져 정보 수정
     - [ ] 로그인 API : Naver / Google
+  - REST API
+    - [ ] 시설 리스트 
+    - [ ] 시설 상세 정보
+    - [ ] 유져 로그인 / 회원 가입 등
 - 지도 API
 
   - [ ] 네이버 지도 or 구글 지도
@@ -52,6 +56,7 @@
     - vpc_config : lambda 네트워크에 설정될 내용
       - 서브넷: private subnet 설정
       - 보안그룹: NAT 보안그룹 설정
+  - [ ] 도메인 연결
 
 
 - AWS Lambda 배포 전 사전작업
@@ -68,3 +73,96 @@
     - 소스/대상 확인: 비활성화
     - 탄력적 IP 주소 연결
 
+#### app/.secret
+
+- app/.secret/base.json 
+
+  ```
+  {
+    "API_KEY": "공공데이터 포털 API Key",
+    "SECRET_KEY": "Django SECRET KEY"
+  }              
+  ```
+
+- app/.secret/dev.json
+
+  ```
+  {
+    "LOCAL_POSTGRES_DATABASES": {
+      "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "USER": "",
+        "NAME": "",
+        "HOST": "localhost",
+        "PORT": "",
+        "PASSWORD": ""
+      }
+    },
+    "AWS_POSTGRES_DATABASES": {
+      "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "USER": "",
+        "NAME": "",
+        "HOST": "",
+        "PORT": "",
+        "PASSWORD": ""
+      }
+    },
+    "AWS_MYSQL_DATABASES": {
+      "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "USER": "",
+        "NAME": "",
+        "HOST": "",
+        "PORT": "",
+        "PASSWORD": ""
+      }
+    },
+    "ALLOWED_HOSTS": [
+      "localhost",
+      "127.0.0.1"
+    ]
+  }
+  ```
+
+- app/.secrets/production.json
+
+  ```
+  {
+    "AWS_MYSQL_DATABASES": {
+      "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "USER": "",
+        "NAME": "",
+        "HOST": "",
+        "PORT": "3306",
+        "PASSWORD": "",
+        "OPTIONS": {
+          "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+          "charset": "utf8mb4"
+        }
+      }
+    },
+  
+    "AWS_POSTGRES_DATABASES": {
+      "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "USER": "",
+        "NAME": "",
+        "HOST": "",
+        "PORT": "5432",
+        "PASSWORD": ""
+      }
+    },
+  
+    "ALLOWED_HOSTS": [
+      ".execute-api.ap-northeast-2.amazonaws.com"
+    ]
+  }
+  ```
+
+  
+
+
+
+#### 
