@@ -11,11 +11,29 @@ from .models import User, LikeFacility
 from .forms import SignupForm, SigninForm
 
 
-class SignupView(CreateView):
-    template_name = 'members/signup.html'
-    form_class = SignupForm
-    # 회원가입 성공시 이동시킬 페이지
-    success_url = reverse_lazy('facilities:index')
+# class SignupView(CreateView):
+#     template_name = 'members/signup.html'
+#     form_class = SignupForm
+#     # 회원가입 성공시 이동시킬 페이지
+#     success_url = reverse_lazy('facilities:index')
+#
+#     def post(self, request, *args, **kwargs):
+#         self.object = None
+#         return super().post(request, *args, **kwargs)
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return redirect('facilities:index')
+    else:
+        form = SignupForm()
+    return render(request, 'members/signup.html', {'form': form})
 
 
 def signin_view(request):
@@ -68,5 +86,5 @@ def like_facility(request, pk):
         return redirect('members:signin')
 
 
-signup = SignupView.as_view()
+# signup = SignupView.as_view()
 user_info = UserInfoView.as_view()
