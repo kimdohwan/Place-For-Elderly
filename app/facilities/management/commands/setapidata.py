@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from open_api.open_api import get_api_data
+from open_api.recuperation_facility import get_api_data
 from ...models import Facility
 
 
