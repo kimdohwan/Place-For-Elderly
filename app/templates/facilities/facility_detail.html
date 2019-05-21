@@ -57,14 +57,11 @@
     </div>
 
     <div class="detail-bottom">
-        {#요양원 이름#}
-        <h4>{{ facility.BIZPLC_NM }}</h4>
-
         {#관심목록 추가하는 form#}
         <div>
             <form action="{% url 'members:like-facility' facility.id %}" method="post">
                 {% csrf_token %}
-                <button type="submit">내 관심목록에 추가하기</button>
+                <button type="submit"> 관심 목록에 추가하기</button>
             </form>
 
             {#관심목록 추가 시 응답할 메시지#}
