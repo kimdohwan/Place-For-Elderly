@@ -1,37 +1,117 @@
 {% extends "index.html" %}
 
 {% block extrahead %}
+
+    {#네이버 지도 API#}
+    <script type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=knjayugc7j"></script>
+
     <style>
+        div.detail-top {
+            display: flex;
+            margin-top: 50px;
+        }
+
+        div.detail-top-continer {
+            margin: 0 auto;
+        }
+
+        div.detail-bottom {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        div.table-wrapper {
+            float: left;
+        }
+
         table {
             table-layout: fixed;
             text-align: center;
-            margin: 0 auto;
+            margin: 0 10px;
         }
 
         th, td {
             white-space: nowrap;
         }
 
-        div.detail-table {
-            text-align: center;
+        #map {
+            width: 500px;
+            height: 100%;
+            float: left;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <p></p>
-    <button type="submit"></button>
-    <div class="detail-table">
-        <h4><p>{{ facility.BIZPLC_NM }}</p>상세정보</h4>
-        <form action="{% url 'members:like-facility' facility.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">내 관심목록에 추가하기</button>
-        </form>
-        {% if messages %}
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        {% endif %}
+
+    <div class="detail-top">
+        <div class="detail-top-continer">
+            <div class="table-wrapper">
+                {#시설 정보를 담은 테이블을 불러옴#}
+                {% include 'facilities/facility_info.html' with facility=facility %}
+            </div>
+            {#네이버 지도#}
+            <div id="map"></div>
+        </div>
     </div>
-    {% include 'facilities/facility_info.html' with facility=facility %}
+
+    <div class="detail-bottom">
+        {#요양원 이름#}
+        <h4>{{ facility.BIZPLC_NM }}</h4>
+
+        {#관심목록 추가하는 form#}
+        <div>
+            <form action="{% url 'members:like-facility' facility.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">내 관심목록에 추가하기</button>
+            </form>
+
+            {#관심목록 추가 시 응답할 메시지#}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        var facility = new naver.maps.LatLng({{ facility.REFINE_WGS84_LAT }}, {{ facility.REFINE_WGS84_LOGT }}),
+            map = new naver.maps.Map('map', {
+                center: facility.destinationPoint(0, 300),
+                zoomControl: true,
+                zoom: 8,
+                zoomControlOptions: {
+                    position: naver.maps.Position.TOP_RIGHT
+                }
+
+            }),
+            marker = new naver.maps.Marker({
+                map: map,
+                position: facility
+            });
+
+        var contentString = [
+            '<div class="iw_inner">',
+            '   <h5>{{ facility.BIZPLC_NM }}</h5>',
+            '   <p>{{ facility.REFINE_LOTNO_ADDR }}</p>',
+            '</div>'
+        ].join('');
+
+        var infowindow = new naver.maps.InfoWindow({
+            content: contentString
+        });
+
+        naver.maps.Event.addListener(marker, "click", function (e) {
+            if (infowindow.getMap()) {
+                infowindow.close();
+            } else {
+                infowindow.open(map, marker);
+            }
+        });
+
+        infowindow.open(map, marker);
+    </script>
+
 {% endblock %}
