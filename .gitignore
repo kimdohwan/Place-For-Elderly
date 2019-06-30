@@ -1,6 +1,7 @@
 
 ### My ignore ###
 .secrets/
+.static/
 
 ### JupyterNotebook ###
 .ipynb_checkpoints
