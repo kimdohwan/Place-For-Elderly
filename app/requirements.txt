@@ -36,7 +36,7 @@ jupyter-core==4.4.0
 kappa==0.6.0
 lambda-packages==0.20.0
 MarkupSafe==1.1.1
-mistune==0.8.4
+mistune==2.0.3
 mysqlclient==1.4.2.post1
 nbconvert==5.5.0
 nbformat==4.4.0
